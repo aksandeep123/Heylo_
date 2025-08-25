@@ -13,8 +13,5 @@ A modern chat application built with Flutter and Firebase.
 ## 👨‍💻 Author
 **Sandeep Kumar** (aksandeep123)
 
-## 📄 License
-MIT License - Copyright (c) 2025 Sandeep Kumar
-
 ---
 *This is a completely rewritten and customized chat application.*

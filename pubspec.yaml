@@ -1,4 +1,4 @@
-name: whatsapp_ui
+name: heylo
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -34,6 +34,12 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  image_picker: ^0.8.6
+  video_player: ^2.4.7
+  audioplayers: ^3.0.1
+  url_launcher: ^6.1.7
+  permission_handler: ^10.2.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

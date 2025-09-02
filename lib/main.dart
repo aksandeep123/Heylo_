@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/screens/mobile_layout_screen.dart';
-import 'package:whatsapp_ui/screens/web_layout_screen.dart';
-import 'package:whatsapp_ui/utils/responsive_layout.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/screens/password_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,14 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Whatsapp UI',
+      title: 'Heylo',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: backgroundColor,
       ),
-      home: const ResponsiveLayout(
-        mobileScreenLayout: MobileLayoutScreen(),
-        webScreenLayout: WebLayoutScreen(),
-      ),
+      home: const PasswordScreen(),
     );
   }
 }

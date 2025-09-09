@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/services/whatsapp_service.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/services/whatsapp_service.dart';
 
 class WhatsAppIntegrationScreen extends StatefulWidget {
   const WhatsAppIntegrationScreen({Key? key}) : super(key: key);

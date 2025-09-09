@@ -4,9 +4,14 @@ import 'package:heylo/widgets/chat_list.dart';
 import 'package:heylo/models/message.dart';
 import 'package:heylo/services/chat_service.dart';
 import 'package:heylo/services/chat_service_real.dart';
-import 'package:heylo/services/call_service.dart';
+import 'package:heylo/services/simple_call_service.dart';
 import 'package:heylo/services/auth_service.dart';
-import 'package:heylo/services/whatsapp_service.dart';
+import 'package:heylo/services/simple_whatsapp_service.dart';
+// Removed external service imports
+import 'package:heylo/services/real_user_service.dart';
+import 'dart:async';
+import 'package:heylo/screens/schedule_message_screen.dart';
+import 'package:heylo/services/storage_service.dart';
 
 class MobileChatScreen extends StatefulWidget {
   final String contactName;
@@ -42,12 +47,19 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
     if (messageController.text.trim().isNotEmpty) {
       final messageText = messageController.text.trim();
       
-      // Always send via WhatsApp if phone number available
-      if (widget.phoneNumber != null) {
-        await WhatsAppService.sendWhatsAppMessage(
-          widget.phoneNumber!,
-          messageText,
-          context,
+      // Send via real user service
+      final success = await RealUserService.sendMessage(
+        widget.contactName,
+        messageText,
+      );
+      
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Message sent to ${widget.contactName}!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
         );
       }
       
@@ -63,6 +75,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
         chatMessages[widget.contactName] = [];
       }
       chatMessages[widget.contactName]!.add(message);
+      await StorageService.saveMessages();
       
       messageController.clear();
       setState(() {});
@@ -122,21 +135,52 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: const Text('Open in WhatsApp'),
+                child: const Row(
+                  children: [
+                    Icon(Icons.schedule_send),
+                    SizedBox(width: 8),
+                    Text('Schedule Message'),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScheduleMessageScreen(
+                        contactName: widget.contactName,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              PopupMenuItem(
+                child: const Row(
+                  children: [
+                    Icon(Icons.open_in_new),
+                    SizedBox(width: 8),
+                    Text('Open in WhatsApp'),
+                  ],
+                ),
                 onTap: () {
                   if (widget.phoneNumber != null) {
-                    WhatsAppService.openWhatsAppChat(widget.phoneNumber!, context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Opening chat with ${widget.phoneNumber}')),
+                    );
                   }
                 },
               ),
               PopupMenuItem(
-                child: const Text('Share Contact'),
+                child: const Row(
+                  children: [
+                    Icon(Icons.share),
+                    SizedBox(width: 8),
+                    Text('Share Contact'),
+                  ],
+                ),
                 onTap: () {
                   if (widget.phoneNumber != null) {
-                    WhatsAppService.shareContact(
-                      widget.contactName,
-                      widget.phoneNumber!,
-                      context,
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Sharing contact: ${widget.contactName}')),
                     );
                   }
                 },

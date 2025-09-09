@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/info.dart';
-import 'package:whatsapp_ui/models/status.dart';
-import 'package:whatsapp_ui/screens/add_status_screen.dart';
-import 'package:whatsapp_ui/screens/status_view_screen.dart';
+import 'dart:convert';
+import 'package:heylo/colors.dart';
+import 'package:heylo/models/status.dart';
+import 'package:heylo/screens/simple_status_screen.dart';
+import 'package:heylo/services/real_user_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StatusList extends StatefulWidget {
   const StatusList({Key? key}) : super(key: key);
@@ -13,11 +14,49 @@ class StatusList extends StatefulWidget {
 }
 
 class _StatusListState extends State<StatusList> {
+  List<Map<String, dynamic>> contactList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContacts();
+  }
+
+  void _loadContacts() {
+    setState(() {
+      contactList = RealUserService.getRealUsers();
+    });
+  }
+  
+  Future<String> _getMyStatusText() async {
+    final prefs = await SharedPreferences.getInstance();
+    final statusJson = prefs.getString('my_status');
+    if (statusJson != null) {
+      final statusData = jsonDecode(statusJson);
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(statusData['timestamp']);
+      final hoursAgo = DateTime.now().difference(timestamp).inHours;
+      
+      if (hoursAgo < 24) {
+        return statusData['text'].isNotEmpty 
+            ? statusData['text'] 
+            : '${statusData['mediaType']} • ${hoursAgo}h ago';
+      }
+    }
+    return 'Tap to add status update';
+  }
+  
+  Future<Map<String, String?>> _getMyProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'name': prefs.getString('profile_name') ?? 'You',
+      'image': prefs.getString('profile_image'),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: userStatuses.length + info.length + 1,
+      itemCount: contactList.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
           return ListTile(
@@ -47,65 +86,50 @@ class _StatusListState extends State<StatusList> {
               ],
             ),
             title: const Text('My status'),
-            subtitle: Text(userStatuses.isNotEmpty ? 'Tap to view status' : 'Tap to add status update'),
-            onTap: () {
-              if (userStatuses.isNotEmpty) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StatusViewScreen(status: userStatuses.first),
-                  ),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddStatusScreen()),
-                );
-              }
-            },
-          );
-        }
-        
-        if (index <= userStatuses.length) {
-          final status = userStatuses[index - 1];
-          return ListTile(
-            leading: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: tabColor, width: 3),
-              ),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(status.userImage),
-                radius: 27,
-              ),
+            subtitle: FutureBuilder<String>(
+              future: _getMyStatusText(),
+              builder: (context, snapshot) {
+                return Text(snapshot.data ?? 'Tap to add status update');
+              },
             ),
-            title: Text(status.userName),
-            subtitle: Text('${DateTime.now().difference(status.timestamp).inHours}h ago'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => StatusViewScreen(status: status),
-                ),
-              );
+                MaterialPageRoute(builder: (context) => const AddStatusScreen()),
+              ).then((_) {
+                setState(() {}); // Refresh after adding status
+              });
             },
           );
         }
         
-        final contact = info[index - userStatuses.length - 1];
+        // Show status only for contacts in contact list
+        final contact = contactList[index - 1];
         return ListTile(
           leading: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey, width: 2),
+              border: Border.all(color: tabColor, width: 2),
             ),
             child: CircleAvatar(
-              backgroundImage: NetworkImage(contact['profilePic']!),
+              backgroundColor: tabColor,
+              child: Text(
+                contact['name'][0].toUpperCase(),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
               radius: 27,
             ),
           ),
-          title: Text(contact['name']!),
+          title: Text(contact['name']),
           subtitle: Text('${DateTime.now().hour - index} minutes ago'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const StatusViewScreen(),
+              ),
+            );
+          },
         );
       },
     );

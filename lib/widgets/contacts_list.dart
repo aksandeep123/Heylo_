@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:heylo/colors.dart';
 import 'package:heylo/info.dart';
 import 'package:heylo/screens/mobile_chat_screen.dart';
-import 'package:heylo/screens/self_profile_screen.dart';
+import 'package:heylo/screens/simple_self_profile_screen.dart';
 import 'package:heylo/screens/group_chat_screen.dart';
 import 'package:heylo/models/message.dart';
 import 'package:heylo/models/group.dart';
-import 'package:heylo/services/whatsapp_service.dart';
+// import 'package:heylo/services/whatsapp_service.dart';
 
 class ContactsList extends StatefulWidget {
   const ContactsList({Key? key}) : super(key: key);
@@ -136,7 +136,9 @@ class _ContactsListState extends State<ContactsList> {
                           onPressed: () {
                             final phone = info[contactIndex]['phone']?.toString();
                             if (phone != null) {
-                              WhatsAppService.openWhatsAppChat(phone, context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Opening WhatsApp chat with $phone')),
+                              );
                             }
                           },
                           icon: const Icon(Icons.chat, color: Colors.green, size: 20),

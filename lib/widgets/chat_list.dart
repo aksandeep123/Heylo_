@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/widgets/my_message_card.dart';
-import 'package:whatsapp_ui/widgets/sender_message_card.dart';
-import 'package:whatsapp_ui/models/message.dart';
+import 'package:heylo/widgets/my_message_card.dart';
+import 'package:heylo/widgets/sender_message_card.dart';
+import 'package:heylo/models/message.dart';
 
 class ChatList extends StatelessWidget {
   final String contactName;

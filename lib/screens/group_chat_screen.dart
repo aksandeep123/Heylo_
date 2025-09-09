@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/models/group.dart';
-import 'package:whatsapp_ui/models/message.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/models/group.dart';
+import 'package:heylo/models/message.dart';
+import 'package:heylo/screens/group_summary_screen.dart';
 
 class GroupChatScreen extends StatefulWidget {
   final Group group;
@@ -65,7 +66,30 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.video_call)),
           IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Row(
+                  children: [
+                    Icon(Icons.summarize),
+                    SizedBox(width: 8),
+                    Text('Group Summary'),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GroupSummaryScreen(
+                        group: widget.group,
+                        messages: messages,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ],
       ),
       body: Column(

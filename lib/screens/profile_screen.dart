@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/info.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/info.dart';
 
 class ProfileScreen extends StatefulWidget {
   final int contactIndex;

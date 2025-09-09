@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:whatsapp_ui/models/message.dart';
+import 'package:heylo/models/message.dart';
 
 class ChatService {
   static Timer? _timer;

@@ -1,13 +1,14 @@
 import 'dart:ui';
 
-const backgroundColor = Color.fromRGBO(19, 28, 33,1);
-const textColor = Color.fromRGBO(241, 241, 242, 1);
-const appBarColor = Color.fromRGBO(31,44,52,1);
-const webAppBarColor = Color.fromRGBO(42,47,50,1);
-const messageColor = Color.fromRGBO(5, 96, 98, 1);
-const senderMessageColor = Color.fromRGBO(37, 45, 49, 1);
-const tabColor = Color.fromRGBO(0, 167, 131, 1);
-const searchBarColor = Color.fromRGBO(50, 55, 57, 1);
-const dividerColor = Color.fromRGBO(37, 45, 50, 1);
-const chatBarMessage = Color.fromRGBO(30, 36, 40, 1);
-const mobileChatBoxColor = Color.fromRGBO(31, 44, 52, 1);
+// Modern Purple-Blue Theme
+const backgroundColor = Color.fromRGBO(15, 15, 35, 1);           // Deep navy
+const textColor = Color.fromRGBO(255, 255, 255, 1);             // Pure white
+const appBarColor = Color.fromRGBO(88, 86, 214, 1);             // Vibrant purple
+const webAppBarColor = Color.fromRGBO(67, 56, 202, 1);          // Deep purple
+const messageColor = Color.fromRGBO(139, 92, 246, 1);           // Light purple (sent)
+const senderMessageColor = Color.fromRGBO(30, 41, 59, 1);       // Dark slate (received)
+const tabColor = Color.fromRGBO(236, 72, 153, 1);              // Pink accent
+const searchBarColor = Color.fromRGBO(51, 65, 85, 1);          // Slate gray
+const dividerColor = Color.fromRGBO(71, 85, 105, 1);           // Light slate
+const chatBarMessage = Color.fromRGBO(30, 41, 59, 1);          // Dark slate
+const mobileChatBoxColor = Color.fromRGBO(51, 65, 85, 1);      // Input background

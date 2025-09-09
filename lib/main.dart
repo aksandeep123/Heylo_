@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:heylo/colors.dart';
 import 'package:heylo/screens/password_screen.dart';
+import 'package:heylo/services/message_scheduler.dart';
+import 'package:heylo/services/storage_service.dart';
+import 'package:heylo/services/simple_notification_service.dart';
+import 'package:heylo/services/real_user_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SimpleNotificationService.initialize();
+  await StorageService.loadAll();
+  await RealUserService.initialize();
+  MessageScheduler.startScheduler();
   runApp(const MyApp());
 }
 

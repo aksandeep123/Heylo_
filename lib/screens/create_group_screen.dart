@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/info.dart';
-import 'package:whatsapp_ui/models/group.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/info.dart';
+import 'package:heylo/models/group.dart';
+import 'package:heylo/services/storage_service.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     });
   }
 
-  void createGroup() {
+  void createGroup() async {
     if (groupNameController.text.trim().isNotEmpty && selectedMembers.isNotEmpty) {
       final group = Group(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -36,6 +37,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       );
       
       groups.add(group);
+      await StorageService.saveGroups();
       
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Group created successfully!')),

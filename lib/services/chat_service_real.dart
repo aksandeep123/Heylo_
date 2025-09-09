@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:whatsapp_ui/models/message.dart';
+import 'package:heylo/models/message.dart';
 
 class ChatServiceReal {
   static Future<void> sendMessage({

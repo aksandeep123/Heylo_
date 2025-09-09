@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:heylo/colors.dart';
-import 'package:heylo/widgets/contacts_list.dart';
+import 'package:heylo/widgets/realtime_contacts_list.dart';
 import 'package:heylo/widgets/status_list.dart';
 import 'package:heylo/widgets/calls_list.dart';
-import 'package:heylo/screens/add_contact_screen.dart';
+import 'package:heylo/screens/simple_add_contact_screen.dart';
 import 'package:heylo/screens/search_screen.dart';
-import 'package:heylo/screens/add_status_screen.dart';
-import 'package:heylo/screens/whatsapp_integration_screen.dart';
+import 'package:heylo/screens/simple_status_screen.dart';
+import 'package:heylo/screens/simple_whatsapp_integration_screen.dart';
 import 'package:heylo/screens/create_group_screen.dart';
+import 'package:heylo/screens/scheduled_messages_screen.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
   const MobileLayoutScreen({Key? key}) : super(key: key);
@@ -67,6 +68,23 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
                 PopupMenuItem(
                   child: const Row(
                     children: [
+                      Icon(Icons.schedule_send, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Text('Scheduled Messages'),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScheduledMessagesScreen(),
+                      ),
+                    );
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
                       Icon(Icons.integration_instructions, color: Colors.green),
                       SizedBox(width: 8),
                       Text('Heylo Integration'),
@@ -112,7 +130,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
         body: TabBarView(
           controller: tabController,
           children: const [
-            ContactsList(),
+            RealtimeContactsList(),
             StatusList(),
             CallsList(),
           ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_ui/colors.dart';
-import 'package:whatsapp_ui/info.dart';
-import 'package:whatsapp_ui/screens/mobile_chat_screen.dart';
+import 'package:heylo/colors.dart';
+import 'package:heylo/info.dart';
+import 'package:heylo/screens/mobile_chat_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);

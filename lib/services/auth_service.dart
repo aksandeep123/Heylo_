@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:whatsapp_ui/models/user.dart' as model;
+import 'package:heylo/models/user.dart' as model;
 
 class AuthService {
   static const String _usersKey = 'registered_users';

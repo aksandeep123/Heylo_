@@ -9,6 +9,24 @@ List<Map<String, dynamic>> info = [
     'isRegistered': true,
     'isSelf': true,
   },
+  {
+    'name': '+91 93708 85911',
+    'message': 'WhatsApp Contact',
+    'time': 'now',
+    'profilePic': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=60',
+    'phone': '+919370885911',
+    'isRegistered': true,
+    'isSelf': false,
+  },
+  {
+    'name': 'John Doe',
+    'message': 'Hey there!',
+    'time': '12:30 pm',
+    'profilePic': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=60',
+    'phone': '+1234567890',
+    'isRegistered': true,
+    'isSelf': false,
+  },
 ];
 
 const messages = [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:heylo/colors.dart';
 import 'package:heylo/info.dart';
 import 'package:heylo/services/auth_service.dart';
+import 'package:heylo/services/storage_service.dart';
 
 class AddContactScreen extends StatefulWidget {
   const AddContactScreen({Key? key}) : super(key: key);
@@ -50,6 +51,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
       }
       
       info.add(newContact);
+      await StorageService.saveContacts();
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(existingUser != null ? 'Contact added - Available on Heylo!' : 'Contact added - Will be invited to Heylo')),

@@ -5,7 +5,8 @@ import 'package:heylo/screens/mobile_layout_screen.dart';
 import 'package:heylo/screens/web_layout_screen.dart';
 
 class PasswordScreen extends StatefulWidget {
-  const PasswordScreen({Key? key}) : super(key: key);
+  final Widget navigateTo;
+  const PasswordScreen({Key? key, required this.navigateTo}) : super(key: key);
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
@@ -20,10 +21,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const ResponsiveLayout(
-            mobileScreenLayout: MobileLayoutScreen(),
-            webScreenLayout: WebLayoutScreen(),
-          ),
+          builder: (context) => widget.navigateTo,
         ),
       );
     } else {

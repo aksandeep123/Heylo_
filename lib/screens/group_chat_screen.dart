@@ -88,6 +88,89 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   );
                 },
               ),
+              if (widget.group.admin == 'You')
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
+                      Icon(Icons.admin_panel_settings),
+                      SizedBox(width: 8),
+                      Text('Manage Co-Admins'),
+                    ],
+                  ),
+                  onTap: () async {
+                    await Future.delayed(Duration.zero); // Fixes popup menu bug
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        final nonAdmins = widget.group.members.where((m) => m != widget.group.admin && !widget.group.coAdmins.contains(m)).toList();
+                        return AlertDialog(
+                          title: const Text('Promote to Co-Admin'),
+                          content: SizedBox(
+                            width: 300,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: nonAdmins.length,
+                              itemBuilder: (context, index) {
+                                final member = nonAdmins[index];
+                                return ListTile(
+                                  title: Text(member),
+                                  trailing: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.group.coAdmins.add(member);
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Promote'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              if (widget.group.admin == 'You')
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
+                      Icon(Icons.delete_forever, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Delete Group', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  onTap: () async {
+                    await Future.delayed(Duration.zero);
+                    groups.removeWhere((g) => g.id == widget.group.id);
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Group deleted')),
+                    );
+                  },
+                ),
+              if (widget.group.admin != 'You' && widget.group.members.contains('You'))
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
+                      Icon(Icons.exit_to_app, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Leave Group', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  onTap: () async {
+                    await Future.delayed(Duration.zero);
+                    setState(() {
+                      widget.group.members.remove('You');
+                      widget.group.coAdmins.remove('You');
+                    });
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('You left the group')),
+                    );
+                  },
+                ),
             ],
           ),
         ],

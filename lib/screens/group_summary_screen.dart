@@ -3,6 +3,7 @@ import 'package:heylo/colors.dart';
 import 'package:heylo/models/group.dart';
 import 'package:heylo/models/message.dart';
 import 'package:heylo/services/chat_summary_service.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class GroupSummaryScreen extends StatelessWidget {
   final Group group;
@@ -121,6 +122,85 @@ class GroupSummaryScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Message Distribution Chart
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.bar_chart, color: tabColor),
+                        SizedBox(width: 8),
+                        Text('Message Distribution', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 200,
+                      child: BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceAround,
+                          maxY: summary['totalMessages'].toDouble(),
+                          barTouchData: BarTouchData(enabled: false),
+                          titlesData: FlTitlesData(
+                            show: true,
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) {
+                                  switch (value.toInt()) {
+                                    case 0:
+                                      return const Text('You');
+                                    case 1:
+                                      return const Text('Others');
+                                    default:
+                                      return const Text('');
+                                  }
+                                },
+                              ),
+                            ),
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: true),
+                            ),
+                            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                          ),
+                          gridData: FlGridData(show: false),
+                          borderData: FlBorderData(show: false),
+                          barGroups: [
+                            BarChartGroupData(
+                              x: 0,
+                              barRods: [
+                                BarChartRodData(
+                                  toY: summary['messageStats']['yourMessages'].toDouble(),
+                                  color: tabColor,
+                                  width: 30,
+                                ),
+                              ],
+                            ),
+                            BarChartGroupData(
+                              x: 1,
+                              barRods: [
+                                BarChartRodData(
+                                  toY: summary['messageStats']['otherMessages'].toDouble(),
+                                  color: tabColor.withOpacity(0.7),
+                                  width: 30,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             const SizedBox(height: 16),
 
             // Key Topics

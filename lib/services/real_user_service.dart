@@ -170,6 +170,11 @@ class RealUserService {
     // Return only other users (not current user)
     return _realUsers.where((user) => user['id'] != _currentUserId).toList();
   }
+
+  static Future<void> deleteContactsByName(List<String> names) async {
+    _realUsers.removeWhere((user) => names.contains(user['name']));
+    await _saveRealUsers();
+  }
   
   static String? getCurrentUserId() => _currentUserId;
   static String? getCurrentUserName() => _currentUserName;

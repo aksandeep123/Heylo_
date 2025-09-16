@@ -46,13 +46,13 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   void sendMessage() async {
     if (messageController.text.trim().isNotEmpty) {
       final messageText = messageController.text.trim();
-      
+
       // Send via real user service
       final success = await RealUserService.sendMessage(
         widget.contactName,
         messageText,
       );
-      
+
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -62,21 +62,7 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           ),
         );
       }
-      
-      // Also store locally
-      final message = Message(
-        text: messageText,
-        isMe: true,
-        time: '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
-        contactName: widget.contactName,
-      );
-      
-      if (chatMessages[widget.contactName] == null) {
-        chatMessages[widget.contactName] = [];
-      }
-      chatMessages[widget.contactName]!.add(message);
-      await StorageService.saveMessages();
-      
+
       messageController.clear();
       setState(() {});
     }

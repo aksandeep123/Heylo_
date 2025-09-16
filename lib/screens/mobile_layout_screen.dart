@@ -9,9 +9,11 @@ import 'package:heylo/screens/simple_status_screen.dart';
 import 'package:heylo/screens/simple_whatsapp_integration_screen.dart';
 import 'package:heylo/screens/create_group_screen.dart';
 import 'package:heylo/screens/scheduled_messages_screen.dart';
+import 'package:heylo/screens/theme_selection_screen.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
-  const MobileLayoutScreen({Key? key}) : super(key: key);
+  final Function(int)? updateTheme;
+  const MobileLayoutScreen({Key? key, this.updateTheme}) : super(key: key);
 
   @override
   State<MobileLayoutScreen> createState() => _MobileLayoutScreenState();
@@ -21,6 +23,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
     with TickerProviderStateMixin {
 
   late TabController tabController;
+  bool selectionMode = false;
 
   @override
   void initState() {
@@ -37,12 +40,18 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
     super.dispose();
   }
 
+  void enableSelectionMode() {
+    setState(() {
+      selectionMode = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: appBarColor,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: false,
           title: const Text(
             'Heylo',
@@ -99,23 +108,44 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
                     );
                   },
                 ),
-                const PopupMenuItem(
-                  child: Row(
+                PopupMenuItem(
+                  child: const Row(
                     children: [
-                      Icon(Icons.settings),
+                      Icon(Icons.color_lens, color: Colors.purple),
                       SizedBox(width: 8),
-                      Text('Settings'),
+                      Text('Change Theme'),
                     ],
                   ),
+                  onTap: () async {
+                    final selectedIndex = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ThemeSelectionScreen(),
+                      ),
+                    );
+                    if (selectedIndex != null && widget.updateTheme != null) {
+                      widget.updateTheme!(selectedIndex);
+                    }
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Row(
+                    children: [
+                      Icon(Icons.select_all, color: Colors.orange),
+                      SizedBox(width: 8),
+                      Text('Select'),
+                    ],
+                  ),
+                  onTap: () {
+                    enableSelectionMode();
+                  },
                 ),
               ],
             ),
           ],
           bottom: TabBar(
             controller: tabController,
-            indicatorColor: tabColor,
             indicatorWeight: 4,
-            labelColor: tabColor,
             unselectedLabelColor: Colors.grey,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -129,10 +159,17 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
         ),
         body: TabBarView(
           controller: tabController,
-          children: const [
-            RealtimeContactsList(),
-            StatusList(),
-            CallsList(),
+          children: [
+            RealtimeContactsList(
+              selectionMode: selectionMode,
+              onSelectionModeChanged: (enabled) {
+                setState(() {
+                  selectionMode = enabled;
+                });
+              },
+            ),
+            const StatusList(),
+            const CallsList(),
           ],
         ),
         floatingActionButton: tabController.index == 0
@@ -148,7 +185,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
                         MaterialPageRoute(builder: (context) => const CreateGroupScreen()),
                       );
                     },
-                    backgroundColor: tabColor,
+                    backgroundColor: Theme.of(context).indicatorColor,
                     child: const Icon(Icons.group_add),
                   ),
                   const SizedBox(height: 10),
@@ -160,7 +197,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
                         MaterialPageRoute(builder: (context) => const AddContactScreen()),
                       );
                     },
-                    backgroundColor: tabColor,
+                    backgroundColor: Theme.of(context).indicatorColor,
                     child: const Icon(Icons.message),
                   ),
                 ],
@@ -178,12 +215,12 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
                     );
                   }
                 },
-                backgroundColor: tabColor,
+                backgroundColor: Theme.of(context).indicatorColor,
                 child: Icon(
                   tabController.index == 1 ? Icons.camera_alt : Icons.add_call,
                   color: Colors.white,
                 ),
               ),
-    );
-  }
+      );
+    }
 }

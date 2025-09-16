@@ -3,6 +3,8 @@ class Group {
   final String name;
   final String profilePic;
   final List<String> members;
+  final String admin;
+  final List<String> coAdmins;
   final String lastMessage;
   final String time;
 
@@ -11,6 +13,8 @@ class Group {
     required this.name,
     required this.profilePic,
     required this.members,
+    required this.admin,
+    required this.coAdmins,
     required this.lastMessage,
     required this.time,
   });

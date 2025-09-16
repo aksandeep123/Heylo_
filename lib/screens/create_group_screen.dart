@@ -3,6 +3,7 @@ import 'package:heylo/colors.dart';
 import 'package:heylo/info.dart';
 import 'package:heylo/models/group.dart';
 import 'package:heylo/services/storage_service.dart';
+import 'package:heylo/services/real_user_service.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({Key? key}) : super(key: key);
@@ -27,11 +28,15 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   void createGroup() async {
     if (groupNameController.text.trim().isNotEmpty && selectedMembers.isNotEmpty) {
+      // Set creator as admin, no co-admins initially
+      final String admin = 'You';
       final group = Group(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: groupNameController.text.trim(),
         profilePic: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=60',
         members: selectedMembers,
+        admin: admin,
+        coAdmins: [],
         lastMessage: 'Group created',
         time: 'now',
       );
@@ -52,7 +57,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final contacts = info.where((contact) => contact['isSelf'] != true).toList();
+    // Use contacts from Chats tab (RealUserService)
+    final contacts = RealUserService.getRealUsers();
     
     return Scaffold(
       appBar: AppBar(

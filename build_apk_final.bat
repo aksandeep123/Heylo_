@@ -1,8 +1,20 @@
+apply from: "D:/flutter/flutter_windows_3.32.7-stable/flutter/packages/flutter_tools/gradle/app_plugin_loader.gradle"
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'flutter'
+}
+apply from: "D:/flutter/flutter_windows_3.32.7-stable/flutter/packages/flutter_tools/gradle/app_plugin_loader.gradle"
 @echo off
 echo ========================================
 echo    HEYLO CHAT APK BUILDER
 echo ========================================
 echo.
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'flutter'
+}
 
 echo Step 1: Clearing Gradle cache...
 rmdir /s /q "%USERPROFILE%\.gradle\caches" 2>nul

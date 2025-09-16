@@ -56,6 +56,8 @@ class StorageService {
       'name': g.name,
       'profilePic': g.profilePic,
       'members': g.members,
+      'admin': g.admin,
+      'coAdmins': g.coAdmins,
       'lastMessage': g.lastMessage,
       'time': g.time,
     }).toList());
@@ -73,6 +75,8 @@ class StorageService {
         name: g['name'],
         profilePic: g['profilePic'],
         members: List<String>.from(g['members']),
+        admin: g['admin'] ?? 'You',
+        coAdmins: g['coAdmins'] != null ? List<String>.from(g['coAdmins']) : [],
         lastMessage: g['lastMessage'],
         time: g['time'],
       )));

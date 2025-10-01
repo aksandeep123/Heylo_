@@ -4,7 +4,9 @@ import 'package:heylo/info.dart';
 import 'package:heylo/screens/mobile_chat_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> contacts;
+
+  const SearchScreen({Key? key, required this.contacts}) : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -12,20 +14,20 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredContacts = [];
+  late List<Map<String, dynamic>> filteredContacts;
 
   @override
   void initState() {
     super.initState();
-    filteredContacts = info;
+    filteredContacts = widget.contacts;
   }
 
   void filterContacts(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredContacts = info;
+        filteredContacts = widget.contacts;
       } else {
-        filteredContacts = info
+        filteredContacts = widget.contacts
             .where((contact) =>
                 contact['name'].toString().toLowerCase().contains(query.toLowerCase()))
             .toList();

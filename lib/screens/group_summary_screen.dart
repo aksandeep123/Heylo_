@@ -24,7 +24,52 @@ class GroupSummaryScreen extends StatelessWidget {
         title: Text('${group.name} Summary'),
         backgroundColor: appBarColor,
       ),
-      body: Padding(
+      body: _GroupSummaryScrollView(group: group, summary: summary),
+    );
+  }
+}
+
+class _GroupSummaryScrollView extends StatefulWidget {
+  final Group group;
+  final Map<String, dynamic> summary;
+
+  const _GroupSummaryScrollView({
+    Key? key,
+    required this.group,
+    required this.summary,
+  }) : super(key: key);
+
+  @override
+  State<_GroupSummaryScrollView> createState() => _GroupSummaryScrollViewState();
+}
+
+class _GroupSummaryScrollViewState extends State<_GroupSummaryScrollView> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final group = widget.group;
+    final summary = widget.summary;
+
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      trackVisibility: true,
+      interactive: true,
+      child: SingleChildScrollView(
+        controller: _scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +118,15 @@ class GroupSummaryScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(summary['summary']),
+                    Text('Total Messages: ${summary['totalMessages']}'),
+                    const SizedBox(height: 4),
+                    Text('Active Members: ${summary['activeMembersCount']}'),
+                    const SizedBox(height: 4),
+                    Text('Most Active Member: ${summary['mostActiveMember']}'),
+                    const SizedBox(height: 4),
+                    Text(summary['summary'].contains('You are the most active member')
+                        ? 'You are the most active member.'
+                        : 'Other members are more active.'),
                   ],
                 ),
               ),
@@ -122,6 +175,7 @@ class GroupSummaryScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
 
             // Message Distribution Chart
@@ -203,6 +257,39 @@ class GroupSummaryScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            // Message Distribution Pie Chart
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.pie_chart, color: tabColor),
+                        SizedBox(width: 8),
+                        Text('Message Distribution Pie Chart', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                          sections: _buildPieChartSections(summary),
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 40,
+                          borderData: FlBorderData(show: false),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
             // Key Topics
             if (summary['keyTopics'].isNotEmpty)
               Card(
@@ -237,6 +324,33 @@ class GroupSummaryScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<PieChartSectionData> _buildPieChartSections(Map<String, dynamic> summary) {
+    final yourMessages = summary['messageStats']['yourMessages'].toDouble();
+    final otherMessages = summary['messageStats']['otherMessages'].toDouble();
+    final total = yourMessages + otherMessages;
+
+    if (total == 0) {
+      return [];
+    }
+
+    return [
+      PieChartSectionData(
+        color: tabColor,
+        value: yourMessages,
+        title: 'You\n${((yourMessages / total) * 100).toStringAsFixed(1)}%',
+        radius: 60,
+        titleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+      PieChartSectionData(
+        color: tabColor.withOpacity(0.7),
+        value: otherMessages,
+        title: 'Others\n${((otherMessages / total) * 100).toStringAsFixed(1)}%',
+        radius: 60,
+        titleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    ];
   }
 
   Widget _buildStatCard(String title, String value) {

@@ -79,9 +79,9 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: Colors.blue,
         ),
         textTheme: TextTheme(
-          bodyLarge: TextStyle(color: Colors.white),
-          bodyMedium: TextStyle(color: Colors.white),
-          bodySmall: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+          bodySmall: TextStyle(color: Colors.black),
         ),
         // Add other theme properties as needed
       ),

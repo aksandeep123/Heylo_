@@ -21,7 +21,7 @@ class SenderMessageCard extends StatelessWidget {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: senderMessageColor,
+          color: messageColor,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
@@ -40,14 +40,26 @@ class SenderMessageCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: 2,
+                bottom: 4,
                 right: 10,
-                child: Text(
-                  date,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[600],
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      date,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    const Icon(
+                      Icons.done_all,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ],
                 ),
               ),
             ],

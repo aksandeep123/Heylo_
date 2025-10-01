@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:heylo/colors.dart';
 import 'package:heylo/models/status.dart';
 import 'package:heylo/screens/simple_status_screen.dart';
+import 'package:heylo/services/status_service.dart';
 import 'package:heylo/services/real_user_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StatusList extends StatefulWidget {
   const StatusList({Key? key}) : super(key: key);
@@ -14,11 +13,13 @@ class StatusList extends StatefulWidget {
 }
 
 class _StatusListState extends State<StatusList> {
+  Map<String, List<Status>> allStatuses = {};
   List<Map<String, dynamic>> contactList = [];
 
   @override
   void initState() {
     super.initState();
+    _loadStatuses();
     _loadContacts();
   }
 
@@ -27,30 +28,12 @@ class _StatusListState extends State<StatusList> {
       contactList = RealUserService.getRealUsers();
     });
   }
-  
-  Future<String> _getMyStatusText() async {
-    final prefs = await SharedPreferences.getInstance();
-    final statusJson = prefs.getString('my_status');
-    if (statusJson != null) {
-      final statusData = jsonDecode(statusJson);
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(statusData['timestamp']);
-      final hoursAgo = DateTime.now().difference(timestamp).inHours;
-      
-      if (hoursAgo < 24) {
-        return statusData['text'].isNotEmpty 
-            ? statusData['text'] 
-            : '${statusData['mediaType']} • ${hoursAgo}h ago';
-      }
-    }
-    return 'Tap to add status update';
-  }
-  
-  Future<Map<String, String?>> _getMyProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    return {
-      'name': prefs.getString('profile_name') ?? 'You',
-      'image': prefs.getString('profile_image'),
-    };
+
+  Future<void> _loadStatuses() async {
+    final statuses = await StatusService.getAllStatuses();
+    setState(() {
+      allStatuses = statuses;
+    });
   }
 
   @override
@@ -59,10 +42,13 @@ class _StatusListState extends State<StatusList> {
       itemCount: contactList.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
+          // User's own status
+          final myStatuses = allStatuses['You'] ?? [];
+          final latestStatus = myStatuses.isNotEmpty ? myStatuses.last : null;
           return ListTile(
             leading: Stack(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   backgroundImage: NetworkImage(
                     'https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=400&q=60',
                   ),
@@ -86,30 +72,34 @@ class _StatusListState extends State<StatusList> {
               ],
             ),
             title: const Text('My status'),
-            subtitle: FutureBuilder<String>(
-              future: _getMyStatusText(),
-              builder: (context, snapshot) {
-                return Text(snapshot.data ?? 'Tap to add status update');
-              },
+            subtitle: Text(
+              latestStatus != null
+                  ? '${latestStatus.mediaType} • ${DateTime.now().difference(latestStatus.timestamp).inHours}h ago'
+                  : 'Tap to add status update',
             ),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const AddStatusScreen()),
               ).then((_) {
-                setState(() {}); // Refresh after adding status
+                _loadStatuses();
               });
             },
           );
         }
-        
-        // Show status only for contacts in contact list
+
         final contact = contactList[index - 1];
+        final statuses = allStatuses[contact['name']] ?? [];
+        final latestStatus = statuses.isNotEmpty ? statuses.last : null;
+
         return ListTile(
           leading: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: tabColor, width: 2),
+              border: Border.all(
+                color: latestStatus != null ? tabColor : Colors.grey,
+                width: 2,
+              ),
             ),
             child: CircleAvatar(
               backgroundColor: tabColor,
@@ -121,14 +111,18 @@ class _StatusListState extends State<StatusList> {
             ),
           ),
           title: Text(contact['name']),
-          subtitle: Text('${DateTime.now().hour - index} minutes ago'),
+          subtitle: latestStatus != null
+              ? Text('${DateTime.now().difference(latestStatus.timestamp).inMinutes} minutes ago')
+              : const Text('No status updates'),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const StatusViewScreen(),
-              ),
-            );
+            if (statuses.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StatusViewScreen(statuses: statuses),
+                ),
+              );
+            }
           },
         );
       },

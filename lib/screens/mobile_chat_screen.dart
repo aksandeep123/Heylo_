@@ -11,6 +11,7 @@ import 'package:heylo/services/simple_whatsapp_service.dart';
 import 'package:heylo/services/real_user_service.dart';
 import 'dart:async';
 import 'package:heylo/screens/schedule_message_screen.dart';
+import 'package:heylo/screens/ai_insights_screen.dart';
 import 'package:heylo/services/storage_service.dart';
 
 class MobileChatScreen extends StatefulWidget {
@@ -91,8 +92,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                   Text(
                     widget.isRegistered ? 'online' : 'not on Heylo',
                     style: TextStyle(
-                      fontSize: 12, 
-                      color: widget.isRegistered ? Colors.green : Colors.grey,
+                      fontSize: 12,
+                      color: widget.isRegistered ? Colors.green : Colors.black,
                     ),
                   ),
                 ],
@@ -120,6 +121,25 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           ),
           PopupMenuButton(
             itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Row(
+                  children: [
+                    Icon(Icons.analytics),
+                    SizedBox(width: 8),
+                    Text('AI Insights'),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AIInsightsScreen(
+                        contactName: widget.contactName,
+                      ),
+                    ),
+                  );
+                },
+              ),
               PopupMenuItem(
                 child: const Row(
                   children: [

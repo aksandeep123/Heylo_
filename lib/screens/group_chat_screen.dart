@@ -3,6 +3,7 @@ import 'package:heylo/colors.dart';
 import 'package:heylo/models/group.dart';
 import 'package:heylo/models/message.dart';
 import 'package:heylo/screens/group_summary_screen.dart';
+import 'package:heylo/screens/schedule_message_screen.dart';
 
 class GroupChatScreen extends StatefulWidget {
   final Group group;
@@ -84,6 +85,23 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                         group: widget.group,
                         messages: messages,
                       ),
+                    ),
+                  );
+                },
+              ),
+              PopupMenuItem(
+                child: const Row(
+                  children: [
+                    Icon(Icons.schedule),
+                    SizedBox(width: 8),
+                    Text('Scheduled Messages'),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScheduleMessageScreen(contactName: widget.group.name),
                     ),
                   );
                 },
